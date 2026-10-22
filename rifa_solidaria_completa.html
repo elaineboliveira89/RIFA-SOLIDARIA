@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111111">
+  <title>Rifa Solidária</title>
+  <style>
+    :root {
+      --black: #111111;
+      --gold: #c7a45b;
+      --beige: #f3eee4;
+      --cream: #fbf9f5;
+      --text: #242424;
+      --muted: #77716a;
+      --line: #e6dfd3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .top {
+      background: var(--black);
+      color: white;
+      padding: 28px 18px 24px;
+      text-align: center;
+      border-bottom: 4px solid var(--gold);
+    }
+    .eyebrow {
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(30px, 6vw, 43px);
+      font-weight: 500;
+      margin: 0 0 10px;
+      letter-spacing: .5px;
+    }
+    .subtitle {
+      color: #eee8dc;
+      font-size: 15px;
+      line-height: 1.5;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+    main { max-width: 940px; margin: 0 auto; padding: 22px 14px 38px; }
+    .intro {
+      text-align: center;
+      padding: 17px 12px 21px;
+    }
+    .intro h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-weight: 500;
+      font-size: 25px;
+      margin: 0 0 8px;
+    }
+    .intro p { color: var(--muted); margin: 0; line-height: 1.5; font-size: 14px; }
+    .prizes {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 10px 0 24px;
+    }
+    .prize {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: white;
+      padding: 17px 14px;
+      min-height: 125px;
+    }
+    .prize .number { color: #9b7a38; font-size: 11px; letter-spacing: 1.4px; font-weight: 700; text-transform: uppercase; }
+    .prize h3 { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; font-weight: 500; margin: 8px 0; }
+    .prize p { color: var(--muted); font-size: 13px; line-height: 1.5; margin: 0; }
+    .panel {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 19px;
+      box-shadow: 0 5px 18px rgba(30, 20, 10, .035);
+    }
+    .panel h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 23px; font-weight: 500; margin: 0 0 6px; }
+    .hint { color: var(--muted); font-size: 13px; margin: 0 0 17px; line-height: 1.45; }
+    .legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 16px; font-size: 12px; color: var(--muted); }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 11px; height: 11px; border-radius: 3px; display: inline-block; border: 1px solid #d8d1c6; }
+    .dot.available { background: #fff; }
+    .dot.selected { background: var(--gold); border-color: var(--gold); }
+    .dot.unavailable { background: #e8e5df; }
+    .numbers {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 7px;
+    }
+    .num {
+      border: 1px solid #ded7cb;
+      border-radius: 8px;
+      background: white;
+      color: var(--text);
+      min-height: 42px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .12s, border-color .12s, transform .12s;
+    }
+    .num:hover { border-color: var(--gold); transform: translateY(-1px); }
+    .num.selected { background: var(--gold); border-color: var(--gold); color: #17130b; }
+    .num.unavailable { background: #e8e5df; color: #99938a; cursor: not-allowed; text-decoration: line-through; }
+    .selection {
+      margin-top: 18px;
+      padding: 17px;
+      border-radius: 12px;
+      background: var(--beige);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px 14px;
+      align-items: center;
+    }
+    .selection .label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .selection .picked { font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
+    .total { text-align: right; }
+    .total .amount { font-size: 25px; font-weight: 700; }
+    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 17px; }
+    label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 7px; }
+    input {
+      width: 100%; padding: 12px; border: 1px solid #d8d1c6; border-radius: 8px;
+      font-size: 15px; background: white; color: var(--text);
+    }
+    .notice { font-size: 12px; color: var(--muted); line-height: 1.5; margin: 13px 0 0; }
+    .button {
+      display: inline-block; border: 0; border-radius: 8px; background: var(--black); color: white;
+      padding: 13px 18px; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none;
+    }
+    .button:disabled { opacity: .45; cursor: not-allowed; }
+    .actions { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .demo-warning {
+      margin-top: 18px; border-left: 3px solid var(--gold); background: #faf6ec; padding: 12px 14px;
+      color: #64583e; font-size: 12px; line-height: 1.5;
+    }
+    footer { text-align: center; color: var(--muted); font-size: 12px; padding: 20px 10px 8px; }
+    @media (max-width: 600px) {
+      .prizes { grid-template-columns: 1fr; }
+      .prize { min-height: 0; }
+      .numbers { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+      .num { min-height: 39px; font-size: 13px; }
+      .fields { grid-template-columns: 1fr; }
+      .selection { grid-template-columns: 1fr; }
+      .total { text-align: left; }
+      .panel { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="eyebrow">Uma iniciativa especial</div>
+    <h1>Rifa Solidária</h1>
+    <p class="subtitle">Três prêmios incríveis para ajudar a preparar a chegada da nossa bebê!</p>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h2>Participe e concorra!</h2>
+      <p>Escolha seus números e confira o valor antes de continuar.</p>
+    </section>
+
+    <section class="prizes" aria-label="Prêmios">
+      <article class="prize">
+        <div class="number">1º prêmio</div>
+        <h3>Kit churrasco e bebidas</h3>
+        <p>Para aproveitar com os amigos.</p>
+      </article>
+      <article class="prize">
+        <div class="number">2º prêmio</div>
+        <h3>R$ 300 em combustível + lavagem de moto</h3>
+        <p>Mais praticidade para a estrada.</p>
+      </article>
+      <article class="prize">
+        <div class="number">3º prêmio</div>
+        <h3>2 combos de chopp</h3>
+        <p>Na sede Mutantes Itajaí.</p>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Escolha seus números</h2>
+      <p class="hint">Cada número custa <strong>R$ 20,00</strong>. Todos os números estão disponíveis nesta demonstração.</p>
+      <div class="legend" aria-label="Legenda">
+        <span><i class="dot available"></i> Disponível</span>
+        <span><i class="dot selected"></i> Selecionado por você</span>
+      </div>
+      <div id="numbers" class="numbers" aria-label="Números da rifa"></div>
+
+      <div class="selection">
+        <div>
+          <div class="label">Seus números selecionados</div>
+          <div id="picked" class="picked">Nenhum número selecionado</div>
+        </div>
+        <div class="total">
+          <div class="label">Total</div>
+          <div id="total" class="amount">R$ 0,00</div>
+        </div>
+      </div>
+
+      <div class="fields">
+        <div>
+          <label for="name">Seu nome</label>
+          <input id="name" type="text" autocomplete="name" placeholder="Digite seu nome">
+        </div>
+        <div>
+          <label for="phone">WhatsApp</label>
+          <input id="phone" type="tel" autocomplete="tel" placeholder="(00) 00000-0000">
+        </div>
+      </div>
+      <p class="notice">Esta página é apenas uma demonstração visual. A seleção não reserva números e não envia dados. O controle compartilhado e o pagamento precisam ser configurados antes de usar publicamente.</p>
+      <div class="actions">
+        <button id="continue" class="button" disabled>Continuar</button>
+      </div>
+      <div id="feedback" class="notice" aria-live="polite"></div>
+    </section>
+    <footer>Rifa Solidária · Protótipo demonstrativo</footer>
+  </main>
+
+  <script>
+    const PRICE = 20;
+    const numbersContainer = document.getElementById('numbers');
+    const pickedElement = document.getElementById('picked');
+    const totalElement = document.getElementById('total');
+    const continueButton = document.getElementById('continue');
+    const feedback = document.getElementById('feedback');
+    const selected = new Set();
+
+    // Os 300 números começam disponíveis. O sistema compartilhado será implementado depois.
+    for (let n = 1; n <= 300; n++) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'num';
+      button.textContent = String(n).padStart(3, '0');
+      button.setAttribute('aria-label', 'Número ' + button.textContent + ', disponível');
+      button.addEventListener('click', () => {
+        if (selected.has(n)) selected.delete(n);
+        else selected.add(n);
+        renderSelection();
+      });
+      numbersContainer.appendChild(button);
+    }
+
+    function renderSelection() {
+      const buttons = numbersContainer.querySelectorAll('.num');
+      buttons.forEach((button, index) => {
+        const n = index + 1;
+        const isSelected = selected.has(n);
+        button.classList.toggle('selected', isSelected);
+        button.setAttribute('aria-pressed', String(isSelected));
+      });
+      const nums = Array.from(selected).sort((a, b) => a - b);
+      pickedElement.textContent = nums.length ? nums.map(n => String(n).padStart(3, '0')).join(', ') : 'Nenhum número selecionado';
+      totalElement.textContent = (nums.length * PRICE).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      continueButton.disabled = nums.length === 0 || !name || !phone;
+      feedback.textContent = '';
+    }
+
+    document.getElementById('name').addEventListener('input', renderSelection);
+    document.getElementById('phone').addEventListener('input', renderSelection);
+    continueButton.addEventListener('click', () => {
+      const nums = Array.from(selected).sort((a, b) => a - b).map(n => String(n).padStart(3, '0'));
+      const total = nums.length * PRICE;
+      feedback.textContent = 'Demonstração: você selecionou ' + nums.join(', ') + ' — total de ' + total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + '. Nenhuma reserva ou pagamento foi realizado.';
+    });
+  </script>
+</body>
+</html>
